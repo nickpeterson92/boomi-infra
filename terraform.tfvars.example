@@ -1,0 +1,12 @@
+# Required variables
+key_pair_name       = "your-key-pair-name"
+boomi_account_id    = "your-boomi-account-id"
+boomi_install_token = "your-boomi-install-token"
+
+# Optional - customize as needed
+# aws_region           = "us-west-2"
+# environment          = "dev"
+# atom_name            = "atom1"
+# atom_instance_type   = "m5.xlarge"
+# atom_ebs_volume_size = 100
+# allowed_ssh_cidr     = "0.0.0.0/0"  # Restrict to your IP for better security
