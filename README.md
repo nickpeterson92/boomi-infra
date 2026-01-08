@@ -1,69 +1,14 @@
-# Boomi Atom on AWS - Terraform Deployment
+# Boomi + Terraform Course
 
-Deploys a single Boomi Atom runtime on AWS with a VPC, bastion host, and auto-recovery.
-
-## Architecture
-
-- **VPC** with public and private subnets
-- **NAT Gateway** for private subnet outbound access
-- **Bastion Host** for SSH access to Atom
-- **Boomi Atom** EC2 instance with dedicated EBS volume
-- **CloudWatch Alarm** for automatic instance recovery
+This is a course for learning how to use Terraform, specifically within the scope of a Boomi deployment.
 
 ## Prerequisites
 
-1. AWS CLI configured with valid credentials
-2. Existing EC2 key pair in us-west-2
-3. Boomi installation token (generate in AtomSphere → Settings → Token Management)
+You will need access to the Slalom AWS Innovation Labs. Plese file a ticket at the link below if you do not have access. Reach out to Nick Peterson with any questions.
+https://slalom.service-now.com/help?id=sc_cat_item&sys_id=965fcd6e8797c65004b4ba6f8bbb35be
 
-## Quick Start
+You will need to configure the aws-azure-cli tool. Follow the instructions in the link below to get started.
+https://slalom.service-now.com/kb_view.do?sysparm_article=KB0015023
 
-```bash
-# Initialize Terraform
-terraform init
-
-# Create your tfvars file
-cp terraform.tfvars.example terraform.tfvars
-# Edit terraform.tfvars with your values
-
-# Review the plan
-terraform plan
-
-# Deploy
-terraform apply
-```
-
-## Connecting to Instances
-
-After deployment, Terraform outputs SSH commands:
-
-```bash
-# Connect to bastion
-ssh -i your-key.pem ec2-user@<bastion-public-ip>
-
-# Connect to Boomi Atom via bastion (ProxyJump)
-ssh -i your-key.pem -J ec2-user@<bastion-ip> ec2-user@<atom-private-ip>
-```
-
-## Verification
-
-1. Check Boomi AtomSphere console for the new Atom
-2. SSH to the Atom and check: `sudo systemctl status boomi-atom`
-3. View install log: `cat /var/log/boomi-install.log`
-
-## Cleanup
-
-```bash
-terraform destroy
-```
-
-## Variables
-
-| Name | Description | Default |
-|------|-------------|---------|
-| `aws_region` | AWS region | `us-west-2` |
-| `key_pair_name` | EC2 key pair name | required |
-| `boomi_account_id` | Boomi account ID | required |
-| `atom_name` | Atom display name | `atom1` |
-| `atom_instance_type` | EC2 instance type | `m5.xlarge` |
-| `atom_ebs_volume_size` | EBS volume size (GB) | `100` |
+Below is encouraged content. This is the video I used to learn Terraform. You can probably get by with what I provide, but there is a lot of depth here.
+https://www.youtube.com/watch?v=7xngnjfIlK4

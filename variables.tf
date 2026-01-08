@@ -71,7 +71,6 @@ variable "atom_name" {
 variable "atom_instance_type" {
   description = "Instance type for Boomi Atom"
   type        = string
-  default     = "t3.medium"
 }
 
 variable "atom_ebs_volume_size" {
