@@ -1,4 +1,69 @@
 # -----------------------------------------------------------------------------
+# IAM Role and Policies for CloudWatch Access
+# -----------------------------------------------------------------------------
+resource "aws_iam_role" "atom" {
+  name = "${var.name_prefix}-atom-role"
+  path = "/"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+
+  tags = merge(var.tags, {
+    Name = "${var.name_prefix}-atom-role"
+  })
+}
+
+resource "aws_iam_role_policy" "cloudwatch" {
+  name = "${var.name_prefix}-cloudwatch-policy"
+  role = aws_iam_role.atom.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "logs:DescribeLogStreams",
+          "logs:DescribeLogGroups"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "cloudwatch:PutMetricData",
+          "cloudwatch:GetMetricStatistics",
+          "cloudwatch:ListMetrics"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_instance_profile" "atom" {
+  name = "${var.name_prefix}-atom-profile"
+  role = aws_iam_role.atom.name
+
+  tags = merge(var.tags, {
+    Name = "${var.name_prefix}-atom-profile"
+  })
+}
+
+# -----------------------------------------------------------------------------
 # Security Group
 # -----------------------------------------------------------------------------
 resource "aws_security_group" "atom" {
@@ -68,6 +133,7 @@ resource "aws_instance" "atom" {
   key_name               = var.key_pair_name
   subnet_id              = var.subnet_id
   vpc_security_group_ids = [aws_security_group.atom.id]
+  iam_instance_profile   = aws_iam_instance_profile.atom.name
 
   root_block_device {
     volume_type           = "gp3"
